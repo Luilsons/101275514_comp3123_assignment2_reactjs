@@ -1,21 +1,28 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const userRoutes = require('./routes/user'); // Import the user routes
+const userRoutes = require('./routes/user');
+require('dotenv').config(); // Load environment variables from .env file
 
 // Create Express app
 const app = express();
+const PORT = process.env.PORT || 3000; // Correct assignment of PORT
 
 // Middleware to parse incoming JSON data
 app.use(bodyParser.json());
 
-// MongoDB Atlas connection
-mongoose.connect('mongodb+srv://luilsonsousa:uhiWj8FSdOljBbZH@COMP3123Assignment1.lwip7.mongodb.net/COMP3123Assignment1?retryWrites=true&w=majority&appName=COMP3123Assignment1', {
-}).then(() => {
-    console.log('Connected to MongoDB Atlas');
-}).catch(err => {
-    console.error('MongoDB Atlas connection error:', err);
-});
+// MongoDB Atlas connection using mongoose.connect
+mongoose.connect(process.env.MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    serverSelectionTimeoutMS: 3000 // Timeout after 3 seconds
+})
+    .then(() => {
+        console.log('Connected to MongoDB Atlas');
+    })
+    .catch(err => {
+        console.error('MongoDB Atlas connection error:', err);
+    });
 
 // Register the user routes under /api/v1
 app.use('/api/v1', userRoutes);
@@ -26,7 +33,6 @@ app.get('/', (req, res) => {
 });
 
 // Start server
-const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
