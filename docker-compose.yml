@@ -1,0 +1,30 @@
+version: "3.8"
+
+networks:
+  COMP3123_Assignment2:
+    driver: bridge
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile  
+    ports:
+      - "5000:5000"
+    environment:
+      MONGO_URI: mongodb+srv://luilsonsousa:dDeQxU1eruKkAq4Z@comp3123assignment1.lwip7.mongodb.net/?retryWrites=true&w=majority&appName=COMP3123Assignment1
+    volumes:
+      - ./backend:/app
+    networks:
+      - COMP3123_Assignment2
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile  
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app  
+    networks:
+      - COMP3123_Assignment2
